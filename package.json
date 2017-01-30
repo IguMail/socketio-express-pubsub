@@ -1,0 +1,29 @@
+{
+  "name": "socketio-rest-pubsub",
+  "version": "1.0.0",
+  "description": "Publish activity to socketIO via REST interface, subscribe via websockets",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/fijiweb/socketio-rest-pubsub.git"
+  },
+  "keywords": [
+    "socketio",
+    "rest",
+    "pubsub",
+    "notifications",
+    "push",
+    "realtime",
+    "chat"
+  ],
+  "author": "gabe@fijiwebdesign.com",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/fijiweb/socketio-rest-pubsub#readme",
+  "dependencies": {
+    "express": "^4.14.1",
+    "socketio": "^1.0.0"
+  }
+}
