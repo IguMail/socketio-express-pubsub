@@ -7,6 +7,38 @@ A REST and WebSocket Service over Express and SocketIO
 * Some actions are better performed with REST, others with WebSocket. 
 * PubSub over websocket and REST allows this. 
 
+## Quick Start ##
+
+Clone repo 
+`git clone git+ssh://git@bitbucket.org/fijiweb/socketio-rest-pubsub.git`
+
+`cd socketio-rest-pubsub`
+
+Install dependencies
+`npm install`
+
+Start the server with default
+`npm start`
+
+## Starting Server ##
+
+Usage: 
+		`node index.js [--host hostname] [-p port] [-d] [-s stop] [--cert path] [--key path]`
+	
+	Examples:
+
+		1) Secure HTTPS and TLS websocket with debugging
+
+		  `node index.js --host 0.0.0.0 -p 8000 -d --cert /path/to/cert.crt --key /path/to/key.pem`
+		
+		2) Plain HTTP and websocket with debugging
+
+		  `node index.js --host 0.0.0.0 -p 8000 -d`
+
+		3) Plain HTTP and websocket default port (process.env.PORT)
+
+		  `node index.js`
+
 ### Testing ###
 
 Install mocha test runner globally
@@ -56,3 +88,11 @@ Start PM2 with just one process
 Start PM2 with max number of processes available with logging.
  `pm2 start index.js -i 0 -e log/err.log -o log/out.log -- -p 8000`
 
+ Monitor processes
+ `pm2 monit`
+
+Manage PM2 processes 
+ `pm2 list` 
+ `pm2 stop` 
+ `pm2 restart` 
+ `pm2 delete`

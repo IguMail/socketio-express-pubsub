@@ -49,7 +49,8 @@ app.post('/activity', (req, res) => {
 
   var sockets = getUserSockets(user_id, users)
   debug('got sockets for user', user_id, sockets.length)
-  sockets.forEach((socket) => {
+  Object.keys(sockets).forEach((uid) => {
+    var socket = sockets[uid]
     var data = {
       activity: activity
     }
@@ -66,6 +67,7 @@ app.post('/activity', (req, res) => {
 io.on('connection', (socket) => {
   var uid = uuid.v4()
   sockets[uid] = socket
+  var user_id = null
 
   debug('connection', uid)
 
@@ -77,7 +79,9 @@ io.on('connection', (socket) => {
       // todo: authenticate user
       success = true
 
-      addUserSocket(data.user_id, socket, users)
+      user_id = data.user_id
+
+      addUserSocket(data.user_id, socket, users, uid)
     }
 
     var data = {
@@ -91,30 +95,39 @@ io.on('connection', (socket) => {
   // when the user disconnects.. perform this
   socket.on('disconnect', () => {
     debug('disconnect', uid)
-    delete sockets[uid]
+    cleanSocket(uid, user_id, sockets)
   })
 
   socket.on('error', (e) => {
     debug('Error on socket', uid, e)
+    cleanSocket(uid, user_id, sockets)
   })
 
   socket.on('connect_failed', (e) => {
     debug('Connection failed on socket', uid, e)
+    cleanSocket(uid, user_id, sockets)
   })
 })
+
+function cleanSocket(uid, user_id, sockets) {
+  delete sockets[uid]
+  if (users[user_id]) {
+    delete users[user_id].sockets[uid]
+  }
+}
 
 function authenticate(user_id, token) {
   // todo: implement
 }
 
-function addUserSocket(user_id, socket, users) {
+function addUserSocket(user_id, socket, users, uid) {
   debug('addUserSocket', user_id)
   if (!users[user_id]) {
     users[user_id] = {
-      sockets: []
+      sockets: {}
     }
   }
-  users[user_id].sockets.push(socket)
+  users[user_id].sockets[uid] = socket
 }
 
 function getUserSockets(user_id, users) {
