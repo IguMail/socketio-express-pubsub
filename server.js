@@ -11,6 +11,9 @@ app.use(bodyParser.urlencoded({   // to support URL-encoded bodies
   extended: true
 }))
 
+// cors
+io.set('origins', '*:*')
+
 // Routing
 app.use(express.static(__dirname + '/public'))
 
@@ -95,3 +98,4 @@ function getUserSockets(user_id, users) {
 }
 
 module.exports = server
+module.exports.io = io
