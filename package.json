@@ -31,6 +31,7 @@
     "express": "^4.14.1",
     "minimist": "^1.2.0",
     "node-uuid": "^1.4.7",
+    "posix": "^4.1.1",
     "socket.io": "^1.7.2",
     "socketio": "^1.0.0"
   },
