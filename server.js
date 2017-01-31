@@ -1,8 +1,8 @@
 var express = require('express')
 var app = express()
-var uuid = require('node-uuid')
 var debug = require('debug')('pubsub-server')
 var fs =    require('fs')
+var _util = require('./util')
 var server
 
 var minimist = require('minimist') // todo: move this out
@@ -13,6 +13,7 @@ var output = argv['output'] || argv['O']
 if (output == 'stdout' || output == 'console') {
   debug = console.log
 }
+var stats = argv['stats'] || argv['v']
 
 //SSL cert and key
 var ssl_options = {
@@ -51,18 +52,8 @@ app.post('/activity', (req, res) => {
   debug('Post /activity', req.body)
 
   var activity = req.body
-  var user_id = activity.user_id
 
-  var sockets = getUserSockets(user_id, users)
-  debug('got sockets for user', user_id, sockets.length)
-  Object.keys(sockets).forEach((uid) => {
-    var socket = sockets[uid]
-    var data = {
-      activity: activity
-    }
-    debug('emitting to user ', user_id, data)
-    socket.emit('activity', data)
-  })
+  emitActivity(activity)
 
   res.json({
     status: true,
@@ -71,7 +62,7 @@ app.post('/activity', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  var uid = uuid.v4()
+  var uid = _util.getUid()
   sockets[uid] = socket
   var user_id = null
 
@@ -98,6 +89,14 @@ io.on('connection', (socket) => {
     
   })
 
+  socket.on('activity', (data) => {
+    var activity = data
+    debug('activity', activity)
+
+    emitActivity(activity)
+    
+  })
+
   // when the user disconnects.. perform this
   socket.on('disconnect', () => {
     debug('disconnect', uid)
@@ -115,10 +114,14 @@ io.on('connection', (socket) => {
   })
 })
 
+// cleanup
 function cleanSocket(uid, user_id, sockets) {
   delete sockets[uid]
   if (users[user_id]) {
     delete users[user_id].sockets[uid]
+    if (Object.keys(users[user_id].sockets).length == 0) {
+      delete users[user_id]
+    }
   }
 }
 
@@ -143,6 +146,28 @@ function getUserSockets(user_id, users) {
   }
   return users[user_id].sockets
 }
+
+function emitActivity(activity) {
+  var user_id = activity.user_id
+  var sockets = getUserSockets(user_id, users)
+  debug('got sockets for user', user_id, sockets.length)
+  Object.keys(sockets).forEach((uid) => {
+    var socket = sockets[uid]
+    var data = {
+      activity: activity
+    }
+    debug('emitting activity to user ', user_id, data)
+    socket.emit('activity', data)
+  })
+}
+
+if (stats) {
+  setInterval(() => {
+    debug('stats: sockets %d users %d mem %o', 
+      Object.keys(sockets).length, Object.keys(users).length, _util.memoryUsage())
+  }, 10 * 1000)
+}
+
 
 module.exports = server
 module.exports.io = io

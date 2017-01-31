@@ -5,10 +5,12 @@ var argv = require('minimist')(process.argv.slice(2))
 
 var total = argv['a'] || 1000
 var concurrency = argv['c'] || 100
-var host = argv['host']
+var scheme = 'http://'
+var host = argv['host'] || 'localhost'
+var port = argv['port'] || argv['p'] || 8000
 var debug_match = argv['debug'] || argv['d']
 
-if (debug_match) {
+if (debug_match && debug_match !== true) {
 	process.env.DEBUG = debug_match
 }
 
@@ -19,7 +21,7 @@ debug('Benchmarking with: websocket-bench -a %d -c %d', total, concurrency)
 execFile('websocket-bench', [
 	'-a', total,
 	'-c', concurrency,
-	host || 'http://localhost:8000',
+	scheme + host + ':' + port,
 	'-g', './benchmark/websocket-bench-generator.js'
 	], 
 	(err, stdout, stderr) => {

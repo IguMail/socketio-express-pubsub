@@ -4,9 +4,9 @@
   "description": "Publish activity to socketIO via REST interface, subscribe via websockets",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js -p 8000 -d",
+    "start": "node index.js -p 8000 -d -v",
     "test": "DEBUG=*test* mocha",
-    "benchmark": "DEBUG=*benchmark* node ./benchmark/benchmark.js",
+    "benchmark": "node ./benchmark/benchmark.js -d -a 1000 -c 100",
     "dev": "nodemon index.js -p 8000 -d"
   },
   "repository": {

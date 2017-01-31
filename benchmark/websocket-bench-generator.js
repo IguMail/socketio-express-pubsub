@@ -1,3 +1,6 @@
+var msg_id = 1
+var user_id = 1
+var conn_id = 1
 module.exports = {
        /**
         * Before connection (optional, just for faye)
@@ -15,14 +18,26 @@ module.exports = {
         * @param {done} callback function(err) {}
         */
        onConnect : function(client, done) {
+        user_id = Math.ceil(Math.random() * 1000000)
          // Faye client
          // client.subscribe('/channel', function(message) { })
 
          // Socket.io client
          client.emit('auth', {
-          user_id: 1,
+          conn_id: conn_id++,
+          msg_id: msg_id++,
+          user_id: user_id,
           token: '123'
          })
+
+         var sendMessage = this.sendMessage
+         var count = Math.ceil(Math.random()*10)-1
+         for (var i = 0; i < count; i++) {
+          var s = Math.ceil(Math.random()*10)-1
+          setTimeout(function() {
+            sendMessage(client, () => {})
+           }, s * 1000)
+         }
 
          // Primus client
          // client.write('Sailing the seas of cheese')
@@ -39,10 +54,18 @@ module.exports = {
         * @param {done} callback function(err) {}
         */
        sendMessage : function(client, done) {
-         // Example:
-         // client.emit('test', { hello: 'world' })
-         // client.publish('/test', { hello: 'world' })
-         // client.call('com.myapp.add2', [2, 3]).then(function (res) { })
+        var i = Math.ceil(Math.random()*3)-1
+        var type = ["join_meeting", "email", "email_opened"][i]
+         
+         client.emit('activity', {
+          "conn_id": conn_id,
+          "msg_id": msg_id++,
+          "user_id": user_id, 
+          "type": type,
+          "contact_id": Math.ceil(Math.random()*100),
+          "created_at": new Date()
+        })
+
          done()
        },
 

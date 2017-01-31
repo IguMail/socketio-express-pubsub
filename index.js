@@ -7,6 +7,7 @@ var _debug = argv['debug'] || argv['d']
 var host = argv['host'] || 'localhost'
 var origin = argv['origin'] || argv['cors']
 var output = argv['output'] || argv['O']
+var verbose = argv['verbose'] || argv['v']
 
 // debugging
 if (_debug) {
@@ -63,6 +64,15 @@ if (origin) {
 
 // bind and listen
 server.listen(port, host, () => {
+  debug('Starting server on %s %s with pid %d', 
+  		process.platform, process.arch, process.pid)
+  if (verbose) {
+  	debug('Platform versions', process.versions)
+	debug('Current directory', process.cwd())
+	debug('Executed with', process.execPath)
+	//debug('Environment', process.env)
+  }
+  
   debug('Server listening at host %s port %d', host, port)
 })
 
