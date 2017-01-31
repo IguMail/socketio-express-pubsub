@@ -19,6 +19,33 @@ if (argv['s'] == 'stop') {
 	process.exit(0)
 }
 
+// stops the server
+if (argv['h']) {
+	debug(`SocketIO PubSub server
+	Usage: 
+		node index.js [--host hostname] [-p port] [-d] [-s stop] [--cert path] [--key path]
+	
+	Examples:
+
+		1) Secure HTTPS and TLS websocket with debugging
+
+		  node index.js --host 0.0.0.0 -p 8000 -d --cert /path/to/cert.crt --key /path/to/key.pem
+		
+		2) Plain HTTP and websocket with debugging
+
+		  node index.js --host 0.0.0.0 -p 8000 -d
+
+		3) Plain HTTP and websocket default port (process.env.PORT)
+
+		  node index.js
+
+	Copyright: 
+		gabe@fijiwebdesign.com 
+		http://fijiwebdesign.com
+		`)
+	process.exit(0)
+}
+
 // http server & socket.io
 var server = require('./server')
 

@@ -4,7 +4,8 @@
   "description": "Publish activity to socketIO via REST interface, subscribe via websockets",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=*test* mocha"
+    "test": "DEBUG=*test* mocha",
+    "benchmark": "DEBUG=*benchmark* node ./benchmark/benchmark.js"
   },
   "repository": {
     "type": "git",

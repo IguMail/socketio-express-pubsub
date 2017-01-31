@@ -1,9 +1,29 @@
 var express = require('express')
 var app = express()
-var server = require('http').createServer(app)
-var io = require('socket.io')(server)
 var uuid = require('node-uuid')
 var debug = require('debug')('pubsub-server')
+var fs =    require('fs')
+var server
+
+var minimist = require('minimist') // todo: move this out
+var argv = require('minimist')(process.argv.slice(2))
+
+//SSL cert and key
+var ssl_options = {
+    cert:   argv['cert'] ? fs.readFileSync(argv['cert']) : null,
+    key:    argv['key'] ? fs.readFileSync(argv['key']) : null,
+}
+var options = {}
+
+// create a https or http server 
+if (options.cert && options.key) {
+  options = Object.assign(options, ssl_options)
+  server = require('https').createServer(options, app)
+} else {
+  server = require('http').createServer(app)
+}
+
+var io = require('socket.io')(server)
 
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() )      // to support JSON-encoded bodies
@@ -47,7 +67,7 @@ io.on('connection', (socket) => {
   var uid = uuid.v4()
   sockets[uid] = socket
 
-  debug('connection', Object.keys(socket))
+  debug('connection', uid)
 
   // when the client emits 'auth', this listens and executes
   socket.on('auth', (data) => {
@@ -72,6 +92,14 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     debug('disconnect', uid)
     delete sockets[uid]
+  })
+
+  socket.on('error', (e) => {
+    debug('Error on socket', uid, e)
+  })
+
+  socket.on('connect_failed', (e) => {
+    debug('Connection failed on socket', uid, e)
   })
 })
 
