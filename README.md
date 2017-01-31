@@ -27,8 +27,8 @@ Install websocket-bench globally
 Set the max number of file descriptors
 `ulimit -n 2048` or `ulimit -n 60000`
 
-Run the benchmark tool
-`npm run benchmark -- -a 500`
+Run the benchmark tool with 1000 connections and 100 concurrent connections
+`npm run benchmark -- -a 1000 -c 100`
 
 
 ### Profiling ###
