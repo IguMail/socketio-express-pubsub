@@ -39,3 +39,20 @@ Install node-inspector globally
 Run the server with node-inspector debugging attached
 `node-debug index.js -p 8000 -d`
 
+### Production ###
+
+`ulimit -n 60000`
+
+Install and use PM2 to manage the processes and load balance
+
+ [http://pm2.keymetrics.io/docs/usage/quick-start/](http://pm2.keymetrics.io/docs/usage/quick-start/) 
+
+Install PM2 globally
+ `npm install pm2 -g` 
+
+Start PM2 with just one process
+ `pm2 start index.js -- -p 8000`
+
+Start PM2 with max number of processes available with logging.
+ `pm2 start index.js -i 0 -e log/err.log -o log/out.log -- -p 8000`
+
