@@ -6,12 +6,18 @@ var port = argv['p'] || process.env.PORT || 3000
 var _debug = argv['debug'] || argv['d']
 var host = argv['host'] || 'localhost'
 var origin = argv['origin'] || argv['cors']
+var output = argv['output'] || argv['O']
 
 // debugging
 if (_debug) {
 	process.env.DEBUG = '*pubsub*'
 }
 var debug = process.env.DEBUG ? require('debug')('pubsub-index') : console.log
+if (output == 'stdout' || output == 'console') {
+	debug = console.log
+	debug('debugging to console')
+}
+
 
 // stops the server
 if (argv['s'] == 'stop') {

@@ -8,6 +8,12 @@ var server
 var minimist = require('minimist') // todo: move this out
 var argv = require('minimist')(process.argv.slice(2))
 
+// debugging
+var output = argv['output'] || argv['O']
+if (output == 'stdout' || output == 'console') {
+  debug = console.log
+}
+
 //SSL cert and key
 var ssl_options = {
     cert:   argv['cert'] ? fs.readFileSync(argv['cert']) : null,

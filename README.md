@@ -82,11 +82,14 @@ Install and use PM2 to manage the processes and load balance
 Install PM2 globally
  `npm install pm2 -g` 
 
-Start PM2 with just one process
- `pm2 start index.js -- -p 8000`
+Start PM2 with just one process. Output to console.
+ `pm2 start index.js -- -p 8000 -O console`
+
+View logs
+ `pm2 log index` 
 
 Start PM2 with max number of processes available with logging.
- `pm2 start index.js -i 0 -e log/err.log -o log/out.log -- -p 8000`
+ `pm2 start index.js -i 0 -e log/err.log -o log/out.log -- -p 8000 -O console`
 
  Monitor processes
  `pm2 monit`
