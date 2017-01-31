@@ -4,7 +4,7 @@
   "description": "Publish activity to socketIO via REST interface, subscribe via websockets",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "DEBUG=*test* mocha"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,12 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/fijiweb/socketio-rest-pubsub#readme",
   "dependencies": {
+    "body-parser": "^1.16.0",
     "express": "^4.14.1",
+    "minimist": "^1.2.0",
     "socketio": "^1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
   }
 }
