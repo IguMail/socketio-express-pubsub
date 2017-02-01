@@ -1,5 +1,4 @@
 const minimist = require('minimist')
-const execFile = require('child_process').execFile
 
 var argv = require('minimist')(process.argv.slice(2))
 var port = argv['p'] || process.env.PORT || 3000
@@ -77,18 +76,17 @@ server.listen(port, host, () => {
   debug('Server listening at host %s port %d', host, port)
 })
 
-try {
-	const posix = require('posix')
-	var curr_max_conns = posix.getrlimit('nofile')
-	posix.setrlimit('nofile', { soft: max_conns, hard: max_conns })
-	debug('Set max-connections limit to %d', posix.getrlimit('nofile'))
-} catch(e) {
-	debug('ERROR %o', e)
-	debug('Could not set max-connections limit (ulimit -s %d) !!', max_conns)
-	debug('You will be limited to the systems limit on open files: %o', curr_max_conns)
-	debug('see: http://stackoverflow.com/questions/34588/how-do-i-change-the-number-of-open-files-limit-in-linux')
+if (max_conns) {
+	try {
+		const posix = require('posix')
+		var curr_max_conns = posix.getrlimit('nofile')
+		posix.setrlimit('nofile', { soft: max_conns, hard: max_conns })
+		debug('Set max-connections limit to %d', posix.getrlimit('nofile'))
+	} catch(e) {
+		debug('ERROR %o', e)
+		debug('Could not set max-connections limit (ulimit -s %d) !!', max_conns)
+		debug('You will be limited to the systems limit on open files: %o', curr_max_conns)
+		debug('see: http://stackoverflow.com/questions/34588/how-do-i-change-the-number-of-open-files-limit-in-linux')
+	}
 }
-
-
-
 
