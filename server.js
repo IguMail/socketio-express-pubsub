@@ -10,8 +10,8 @@ var argv = require('minimist')(process.argv.slice(2))
 
 // debugging
 var output = argv['output'] || argv['O']
-if (output == 'stdout' || output == 'console') {
-  debug = console.log
+if (!process.env.DEBUG || output == 'stdout' || output == 'console') {
+  debug = console.log.bind(console)
 }
 var stats = argv['stats'] || argv['v']
 

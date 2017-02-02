@@ -8,14 +8,15 @@ var origin = argv['origin'] || argv['cors']
 var output = argv['output'] || argv['O']
 var verbose = argv['verbose'] || argv['v']
 var max_conns = argv['max-connections'] || argv['c']
+var help = argv['help'] || argv['h'] || argv['?']
 
 // debugging
 if (_debug) {
 	process.env.DEBUG = '*pubsub*'
 }
-var debug = process.env.DEBUG ? require('debug')('pubsub-index') : console.log
+var debug = process.env.DEBUG ? require('debug')('pubsub-index') : console.log.bind(console)
 if (output == 'stdout' || output == 'console') {
-	debug = console.log
+	debug = console.log.bind(console)
 	debug('debugging to console')
 }
 
@@ -27,7 +28,7 @@ if (argv['s'] == 'stop') {
 }
 
 // stops the server
-if (argv['h']) {
+if (help) {
 	debug(`SocketIO PubSub server
 	Usage: 
 		node index.js [--host hostname] [-p port] [-d] [-s stop] [--cert path] [--key path]
