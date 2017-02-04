@@ -57,6 +57,9 @@ if (help) {
 // http server & socket.io
 var server = require('./server')
 
+// attach routes
+require('./routes')
+
 // cors. eg: node index.js --cors '*:*'
 if (origin) {
 	server.io.set('origins', origin)
@@ -74,7 +77,7 @@ server.listen(port, host, () => {
 	//debug('Environment', process.env)
   }
   
-  debug('Server listening at host %s port %d', host, port)
+  debug('Server listening at http://%s:%d/', host, port)
 })
 
 if (max_conns) {
