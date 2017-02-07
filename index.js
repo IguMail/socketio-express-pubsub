@@ -53,6 +53,9 @@ require('./routes')
 
 // cors. eg: node index.js --cors '*:*'
 if (options.origin) {
+	if (!options.origin.length) {
+		options.origin = '*:*'
+	}
 	server.io.set('origins', options.origin)
 	debug('cors origin is: ', options.origin)
 }
