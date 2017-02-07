@@ -4,27 +4,22 @@ var debug = require('debug')('pubsub-server')
 var fs =    require('fs')
 var server
 
-var minimist = require('minimist') // todo: move this out
-var argv = require('minimist')(process.argv.slice(2))
+var options = require('./options')
 
 // debugging
-var output = argv['output'] || argv['O']
-if (!process.env.DEBUG || output == 'stdout' || output == 'console') {
+if (!options.debug || options.output == 'stdout' || options.output == 'console') {
   debug = console.log.bind(console)
 }
-var stats = argv['stats'] || argv['v']
 
 //SSL cert and key
 var ssl_options = {
-    cert:   argv['cert'] ? fs.readFileSync(argv['cert']) : null,
-    key:    argv['key'] ? fs.readFileSync(argv['key']) : null,
+    cert:   options.cert ? fs.readFileSync(options.cert) : null,
+    key:    options.key ? fs.readFileSync(options.key) : null,
 }
-var options = {}
 
 // create a https or http server 
 if (options.cert && options.key) {
-  options = Object.assign(options, ssl_options)
-  server = require('https').createServer(options, app)
+  server = require('https').createServer(ssl_options, app)
 } else {
   server = require('http').createServer(app)
 }
@@ -37,15 +32,9 @@ app.use(bodyParser.urlencoded({   // to support URL-encoded bodies
   extended: true
 }))
 
-// cors
-io.set('origins', '*:*')
-
 // Routing
 app.use(express.static(__dirname + '/public'))
 
 module.exports = server
 module.exports.app = app
 module.exports.io = io
-module.exports.opts = {
-  stats: stats
-}

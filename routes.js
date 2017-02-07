@@ -3,6 +3,12 @@ const io = server.io
 const app = server.app
 var debug = require('debug')('pubsub-route')
 var _util = require('./util')
+var options = require('./options')
+
+// debugging
+if (!options.debug || options.output == 'stdout' || options.output == 'console') {
+  debug = console.log.bind(console)
+}
 
 // Globals
 var sockets = {}
@@ -39,7 +45,7 @@ io.on('connection', (socket) => {
       user_id = data.user_id
 
       addUserSocket(data.user_id, socket, users, uid)
-    }
+      }
 
     var data = {
       status: success
@@ -121,9 +127,9 @@ function emitActivity(activity) {
   })
 }
 
-if (server.opts.stats) {
+if (options.stats) {
   setInterval(() => {
-    debug('stats: sockets %d users %d mem %o', 
+    debug('stats: sockets %d users %d mem ', 
       Object.keys(sockets).length, Object.keys(users).length, _util.memoryUsage())
   }, 10 * 1000)
 }

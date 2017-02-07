@@ -1,34 +1,25 @@
 const minimist = require('minimist')
 
-var argv = require('minimist')(process.argv.slice(2))
-var port = argv['p'] || process.env.PORT || 3000
-var _debug = argv['debug'] || argv['d']
-var host = argv['host'] || 'localhost'
-var origin = argv['origin'] || argv['cors']
-var output = argv['output'] || argv['O']
-var verbose = argv['verbose'] || argv['v']
-var max_conns = argv['max-connections'] || argv['c']
-var help = argv['help'] || argv['h'] || argv['?']
+const options = require('./options')
 
 // debugging
-if (_debug) {
+if (options.debug) {
 	process.env.DEBUG = '*pubsub*'
 }
-var debug = process.env.DEBUG ? require('debug')('pubsub-index') : console.log.bind(console)
-if (output == 'stdout' || output == 'console') {
+var debug = options.debug ? require('debug')('pubsub-index') : console.log.bind(console)
+if (options.output == 'stdout' || options.output == 'console') {
 	debug = console.log.bind(console)
 	debug('debugging to console')
 }
 
-
 // stops the server
-if (argv['s'] == 'stop') {
+if (options.stop == 'stop') {
 	// todo
 	process.exit(0)
 }
 
 // stops the server
-if (help) {
+if (options.help) {
 	debug(`SocketIO PubSub server
 	Usage: 
 		node index.js [--host hostname] [-p port] [-d] [-s stop] [--cert path] [--key path]
@@ -61,34 +52,34 @@ var server = require('./server')
 require('./routes')
 
 // cors. eg: node index.js --cors '*:*'
-if (origin) {
-	server.io.set('origins', origin)
-	debug('cors origin is: ', origin)
+if (options.origin) {
+	server.io.set('origins', options.origin)
+	debug('cors origin is: ', options.origin)
 }
 
 // bind and listen
-server.listen(port, host, () => {
+server.listen(options.port, options.host, () => {
   debug('Starting server on %s %s with pid %d', 
   		process.platform, process.arch, process.pid)
-  if (verbose) {
+  if (options.verbose) {
   	debug('Platform versions', process.versions)
 	debug('Current directory', process.cwd())
 	debug('Executed with', process.execPath)
 	//debug('Environment', process.env)
   }
   
-  debug('Server listening at http://%s:%d/', host, port)
+  debug('Server listening at http://%s:%d/', options.host, options.port)
 })
 
-if (max_conns) {
+if (options.max_conns) {
 	try {
 		const posix = require('posix')
 		var curr_max_conns = posix.getrlimit('nofile')
-		posix.setrlimit('nofile', { soft: max_conns, hard: max_conns })
+		posix.setrlimit('nofile', { soft: options.max_conns, hard: options.max_conns })
 		debug('Set max-connections limit to %d', posix.getrlimit('nofile'))
 	} catch(e) {
 		debug('ERROR %o', e)
-		debug('Could not set max-connections limit (ulimit -s %d) !!', max_conns)
+		debug('Could not set max-connections limit (ulimit -s %d) !!', options.max_conns)
 		debug('You will be limited to the systems limit on open files: %o', curr_max_conns)
 		debug('see: http://stackoverflow.com/questions/34588/how-do-i-change-the-number-of-open-files-limit-in-linux')
 	}
