@@ -13,5 +13,6 @@ options.help = argv['help'] || argv['h'] || argv['?']
 options.stop = argv['s']
 options.cert = argv['cert']
 options.key = argv['key']
+options.stats = argv['stats']
 
 module.exports = options
