@@ -30,9 +30,9 @@ if (options.help) {
 
 		  node index.js --host 0.0.0.0 -p 8000 -d --cert /path/to/cert.crt --key /path/to/key.pem
 		
-		2) Plain HTTP and websocket with debugging
+		2) Plain HTTP and websocket with debugging and statistics
 
-		  node index.js --host 0.0.0.0 -p 8000 -d
+		  node index.js --host 0.0.0.0 -p 8000 -d --stats
 
 		3) Plain HTTP and websocket default port (process.env.PORT)
 
